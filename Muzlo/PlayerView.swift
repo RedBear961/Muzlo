@@ -7,7 +7,7 @@
 
 import SwiftUI
 import AVKit
-import Speech
+import ID3
 
 public struct PlayerView: View {
 
@@ -78,6 +78,8 @@ final class Player: ObservableObject {
 	func _play() {
 		self.urls = FileProvider.shared.urls
 		let player = AudioPlayer(contentsOf: urls.first!)
+
+		let _ = try! ID3Decoder().decode(from: urls.first!)
 
 		currentPlayer = player
 		duration = player.duration

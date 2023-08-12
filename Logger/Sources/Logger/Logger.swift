@@ -1,4 +1,4 @@
-public struct Logger {
+public final class Logger {
 
 	public enum LogLevel {
 
@@ -22,6 +22,15 @@ public struct Logger {
 
 		#if DEBUG
 		print(items)
+		#endif
+	}
+}
+
+public extension Logger {
+
+	func assert(_ condition: Bool, message: String = "") {
+		#if DEBUG
+		Swift.assert(condition, message)
 		#endif
 	}
 }

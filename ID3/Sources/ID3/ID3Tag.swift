@@ -33,6 +33,7 @@ public enum ID3Tag: String, Equatable {
 	case unsyncronisedLyrics = "USLT"
 	case comment = "COMM"
 	case originalFilename = "TOFN"
+	case userDefinedURL = "WXXX"
 }
 
 extension ID3Tag {

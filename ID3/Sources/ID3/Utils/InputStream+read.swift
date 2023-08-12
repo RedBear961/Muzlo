@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension InputStream {
+public extension InputStream {
 
 	func read(count: Int) throws -> [UInt8] {
 		var buffer = [UInt8](repeating: 0, count: count)
