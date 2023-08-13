@@ -6,16 +6,17 @@
 //
 
 import SwiftUI
-import Logger
+import Swinject
 
 @main
 struct MuzloApp: App {
 
-    var body: some Scene {
-        WindowGroup {
-            PlayerView()
-        }
-		.windowToolbarStyle(.unified(showsTitle: false))
-		.windowStyle(.titleBar)
-    }
+	@InjectedResolver var resolver
+
+	var body: some Scene {
+		WindowGroup {
+			RootView()
+				.titlebar(visibility: .hidden)
+		}
+	}
 }

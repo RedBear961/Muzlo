@@ -6,157 +6,200 @@
 //
 
 import SwiftUI
-import AVKit
 import ID3
+import AVKit
+
+public struct Sidebar: View {
+
+	public var body: some View {
+		Text("Моя музыка")
+			.frame(width: 300)
+	}
+}
 
 public struct PlayerView: View {
 
 	@ObservedObject var player = Player()
+	@ObservedObject var queue = PlayQueue()
+
+	@State var text: String = ""
 
 	public var body: some View {
-		NavigationSplitView {
-			Text("123")
-		} detail: {
-			VStack {
-				Text("\(Int(player.time / 60)):\(Int(player.time) % 60)")
+		ZStack {
+			Color(hex: "222222")
+				.ignoresSafeArea()
+				.cornerRadius(12)
+				.overlay(
+					RoundedRectangle(cornerRadius: 12)
+						.stroke(Color(hex: "555555"), lineWidth: 0.5)
+				)
 
-				HStack {
-					Button(action: player.play) {
-						Text("Play")
-					}
+			VStack(alignment: .leading) {
+				List {
+					Section {
+						textField()
+							.padding(.horizontal, 8)
+							.listRowInsets(.none)
 
-					Button(action: player.pause) {
-						Text("Pause")
+						Button(action: {}) {
+							HStack(spacing: 0) {
+								Spacer()
+									.frame(width: 9)
+
+								Image(systemName: "shuffle")
+									.resizable()
+									.aspectRatio(contentMode: .fit)
+									.frame(width: 26)
+
+								Spacer()
+									.frame(width: 21)
+
+								Text("Перемешать все")
+									.fontWeight(.medium)
+							}
+							.padding(2)
+						}
+						.foregroundColor(.blue)
+						.buttonStyle(.plain)
+						.frame(height: 44)
+						.padding(.horizontal, 8)
+
+						ForEach(queue.tracks, id: \.self) { track in
+							cell(for: track)
+								.padding(2)
+						}
+						.padding(.horizontal, 8)
 					}
+					.listRowSeparator(.hidden)
+					.listRowBackground(Color.clear)
 				}
+				.padding(.vertical, 8)
+				.listStyle(.plain)
+				.scrollContentBackground(.hidden)
+			}
+		}
+	}
 
-				Slider(value: $player.sliderTime, in: 0...player.duration)
+	@ViewBuilder func textField() -> some View {
+		ZStack {
+			RoundedRectangle(cornerRadius: 8)
+				.stroke(Color(hex: "555555"), lineWidth: 1)
+				.background(
+					RoundedRectangle(cornerRadius: 8)
+						.fill(Color(hex: "424242"))
+				)
+
+			TextField("Поиск треков", text: $text)
+				.padding(.horizontal, 8)
+		}
+		.frame(height: 44)
+	}
+
+	@ViewBuilder func cell(for track: Track) -> some View {
+		HStack(spacing: 12) {
+			Image(uiImage: track.image)
+				.resizable()
+				.cornerRadius(8)
+				.frame(width: 44, height: 44)
+
+			VStack(alignment: .leading, spacing: 2) {
+				Text(track.title)
+					.foregroundColor(.white)
+					.fontWeight(.medium)
+
+				Text(track.artist)
+					.foregroundColor(.gray)
 			}
-			.padding()
-			.toolbar {
-				HStack {
-					Button(action: player.togglePlay) {
-						Image(systemName: player.isPlaying ? "pause.circle.fill" : "play.circle.fill")
-//							.resizable()
-					}
-				}
-			}
+
+			Spacer()
+
+			Text(track.duration)
+				.foregroundColor(.gray)
 		}
 	}
 }
 
-final class Player: ObservableObject {
+struct SomeView: View {
 
-	var players: [AudioPlayer] = []
-	var index: Int = 0
-	var urls: [URL] = []
-	var currentPlayer: AudioPlayer?
+	var body: some View {
+		Text("123")
+	}
+}
 
-	@Published var sliderTime: Double = 0
-	@Published var duration: Double = 0
-	@Published var time: TimeInterval = 0
-	@Published var isPlaying: Bool = false
+final class PlayQueue: ObservableObject {
+
+	@Published var tracks: [Track] = []
 
 	init() {
-		_play()
-	}
-
-	func togglePlay() {
-		isPlaying ? pause() : play()
-	}
-
-	func play() {
-		isPlaying = true
-		currentPlayer?.play()
-	}
-
-	func pause() {
-		isPlaying = false
-		currentPlayer?.pause()
-	}
-
-	func _play() {
-		self.urls = FileProvider.shared.urls
-		let player = AudioPlayer(contentsOf: urls.first!)
-
-		let _ = try! ID3Decoder().decode(from: urls.first!)
-
-		currentPlayer = player
-		duration = player.duration
-		players.append(player)
-	}
-}
-
-extension TimeInterval {
-	var hourMinuteSecondMS: String {
-		String(format:"%d:%02d:%02d.%03d", hour, minute, second, millisecond)
-	}
-	var minuteSecondMS: String {
-		String(format:"%d:%02d.%03d", minute, second, millisecond)
-	}
-	var hour: Int {
-		Int((self/3600).truncatingRemainder(dividingBy: 3600))
-	}
-	var minute: Int {
-		Int((self/60).truncatingRemainder(dividingBy: 60))
-	}
-	var second: Double {
-		truncatingRemainder(dividingBy: 60)
-	}
-	var millisecond: Int {
-		Int((self*1000).truncatingRemainder(dividingBy: 1000))
-	}
-}
-
-final class AudioPlayer: NSObject {
-
-	private let player: AVAudioPlayer
-	private var observers: [NSKeyValueObservation] = []
-
-	init(contentsOf url: URL) {
-		self.player = try! AVAudioPlayer(contentsOf: url)
-		super.init()
-	}
-
-	var duration: TimeInterval {
-		player.duration
-	}
-
-	var currentTime: TimeInterval {
-		player.currentTime
-	}
-
-	func play() {
-		player.play()
-	}
-
-	func pause() {
-		player.pause()
-	}
-}
-
-final class FileProvider {
-
-	static let shared = FileProvider()
-
-	var urls: [URL] {
-		let fileManager = FileManager.default
-		let appDirectory = "/Users/\(NSUserName())/Music/Muzlo"
-		if !fileManager.fileExists(atPath: appDirectory) {
-			try! fileManager.createDirectory(
-				atPath: appDirectory,
-				withIntermediateDirectories: true
-			)
-		}
-		let contents = try! fileManager.contentsOfDirectory(atPath: appDirectory)
-		return contents.compactMap { file in
-			guard let fileExtension = file.split(separator: ".").last,
-				  fileExtension == "mp3" else {
-				return nil
+		Task {
+			let urls = FileProvider.shared.urls
+			let builder = TrackBuilder()
+			var _tracks = [Track]()
+			for url in urls {
+				let track = try! await builder.track(from: url)
+				_tracks.append(track)
 			}
 
-			return URL(filePath: appDirectory).appending(path: file)
+			await MainActor.run { [_tracks] in
+				self.tracks = _tracks
+			}
 		}
 	}
 }
 
+final class TrackBuilder {
+
+	var templatePicture = UIImage(named: "ic_album")!
+
+	func track(from url: URL) async throws -> Track {
+		let meta = try ID3Decoder().decode(from: url)
+		let asset = AVAsset(url: url)
+		let duration = try await asset.load(.duration)
+		return Track(
+			title: meta.title,
+			artist: meta.artist,
+			album: meta.album,
+			image: meta.image ?? templatePicture,
+			duration: String(format: "%02d:%02d", duration.minutes, duration.seconds % 60)
+		)
+	}
+}
+
+extension CMTime {
+
+	var minutes: Int {
+		seconds / 60
+	}
+
+	var seconds: Int {
+		Int(CMTimeGetSeconds(self))
+	}
+}
+
+extension Color {
+
+	init(hex: String) {
+		let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
+		var int: UInt64 = 0
+		Scanner(string: hex).scanHexInt64(&int)
+		let a, r, g, b: UInt64
+		switch hex.count {
+		case 3: // RGB (12-bit)
+			(a, r, g, b) = (255, (int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
+		case 6: // RGB (24-bit)
+			(a, r, g, b) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
+		case 8: // ARGB (32-bit)
+			(a, r, g, b) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
+		default:
+			(a, r, g, b) = (1, 1, 1, 0)
+		}
+
+		self.init(
+			.sRGB,
+			red: Double(r) / 255,
+			green: Double(g) / 255,
+			blue:  Double(b) / 255,
+			opacity: Double(a) / 255
+		)
+	}
+}

@@ -8,21 +8,11 @@
 import Foundation
 import SwiftUI
 
-struct Track {
-
-	let baseUrl: URL
+struct Track: Hashable {
 
 	let title: String
 	let artist: String
 	let album: String
-
-	var preview: NSImage {
-		get async {
-			await loadImage()
-		}
-	}
-
-	func loadImage() async -> NSImage {
-		return NSImage(named: "")!
-	}
+	let image: UIImage
+	let duration: String
 }

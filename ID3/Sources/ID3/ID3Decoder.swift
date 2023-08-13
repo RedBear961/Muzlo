@@ -22,7 +22,7 @@ public final class ID3Decoder {
 
 	public init() {}
 
-	public func decode(from url: URL) throws -> TrackMeta {
+	public func decode(from url: URL) throws -> ID3Meta {
 		// Блок тэгов.
 		let data = try frame(from: url)
 
@@ -42,8 +42,9 @@ public final class ID3Decoder {
 
 			// Имя тэга.
 			let frame = data.subdata(from: position, count: frameSize)
-			position += frame.count
 			let identifier = [UInt8](frame.subdata(in: 0..<version.identifierSize))
+			
+			position += frame.count
 
 			// Если пустой фрейм, то либо метадата закончилась,
 			// либо записана с ошибкой.
@@ -55,7 +56,6 @@ public final class ID3Decoder {
 			if let tag = ID3Tag(scalar: identifier),
 			   let value = tagDecoder.decode(tag, from: frame) {
 				tags[tag] = value
-				Logger.shared.log(tag, value)
 			}
 
 			Logger.shared.assert(
@@ -64,7 +64,7 @@ public final class ID3Decoder {
 			)
 		}
 
-		return TrackMeta(version: version)
+		return ID3Meta(version: version, tags: tags)
 	}
 
 	// MARK: - Private

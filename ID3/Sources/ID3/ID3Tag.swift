@@ -7,11 +7,6 @@
 
 import Foundation
 
-public struct TrackMeta {
-
-	let version: ID3Version
-}
-
 public enum ID3Tag: String, Equatable {
 
 	case title = "TIT2"
