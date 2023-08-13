@@ -9,9 +9,11 @@ import SwiftUI
 
 public struct RootView: View {
 
+	@InjectedObject var theme: Appearance
+
 	public var body: some View {
 		ZStack {
-			Color(hex: "141414")
+			theme.current.darkBackground
 				.ignoresSafeArea()
 
 			HStack {
@@ -20,11 +22,11 @@ public struct RootView: View {
 				VStack {
 					Rectangle()
 						.frame(height: 60)
-						.cornerRadius(12)
-						.foregroundColor(Color(hex: "222222"))
+						.cornerRadius(.r12)
+						.foregroundColor(theme.current.lightBackground)
 						.overlay(
-							RoundedRectangle(cornerRadius: 12)
-								.stroke(Color(hex: "555555"), lineWidth: 0.5)
+							RoundedRectangle(radius: .r12)
+								.stroke(theme.current.textFieldBorder, lineWidth: 0.5)
 						)
 
 
@@ -34,8 +36,7 @@ public struct RootView: View {
 					PlayerView()
 				}
 			}
-			.padding(.bottom, 24)
-			.padding(.trailing, 24)
+			.padding([.bottom, .trailing], .p24)
 		}
 	}
 }
