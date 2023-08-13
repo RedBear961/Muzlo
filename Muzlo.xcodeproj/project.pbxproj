@@ -17,12 +17,14 @@
 		C81F86ED2A8946D500801709 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = C81F86EC2A8946D500801709 /* Theme.swift */; };
 		C81F86EF2A8946FB00801709 /* AppAssembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = C81F86EE2A8946FB00801709 /* AppAssembly.swift */; };
 		C81F86F12A894C2500801709 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = C81F86F02A894C2500801709 /* Constants.swift */; };
+		C81F86F32A894EE600801709 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C81F86F22A894EE600801709 /* PlayerView.swift */; };
+		C81F86F52A89519900801709 /* RoundedBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = C81F86F42A89519900801709 /* RoundedBackground.swift */; };
 		C821EEA42A879C7800918995 /* Logger in Frameworks */ = {isa = PBXBuildFile; productRef = C821EEA32A879C7800918995 /* Logger */; };
 		C821EEA82A879CEF00918995 /* ID3 in Frameworks */ = {isa = PBXBuildFile; productRef = C821EEA72A879CEF00918995 /* ID3 */; };
 		C83279B32A861E9700B4D229 /* Track.swift in Sources */ = {isa = PBXBuildFile; fileRef = C83279B22A861E9700B4D229 /* Track.swift */; };
 		C8B520F32A84208300B4DB44 /* MuzloApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8B520F22A84208300B4DB44 /* MuzloApp.swift */; };
 		C8B520F72A84208700B4DB44 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C8B520F62A84208700B4DB44 /* Assets.xcassets */; };
-		C8B521022A84213100B4DB44 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8B521012A84213100B4DB44 /* PlayerView.swift */; };
+		C8B521022A84213100B4DB44 /* TrackListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8B521012A84213100B4DB44 /* TrackListView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,6 +37,8 @@
 		C81F86EC2A8946D500801709 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		C81F86EE2A8946FB00801709 /* AppAssembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAssembly.swift; sourceTree = "<group>"; };
 		C81F86F02A894C2500801709 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		C81F86F22A894EE600801709 /* PlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
+		C81F86F42A89519900801709 /* RoundedBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedBackground.swift; sourceTree = "<group>"; };
 		C821EEA12A879C4000918995 /* Logger */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Logger; sourceTree = "<group>"; };
 		C821EEA52A879CB700918995 /* ID3 */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = ID3; sourceTree = "<group>"; };
 		C83279B22A861E9700B4D229 /* Track.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Track.swift; sourceTree = "<group>"; };
@@ -42,7 +46,7 @@
 		C8B520F22A84208300B4DB44 /* MuzloApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuzloApp.swift; sourceTree = "<group>"; };
 		C8B520F62A84208700B4DB44 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C8B520FB2A84208700B4DB44 /* Muzlo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Muzlo.entitlements; sourceTree = "<group>"; };
-		C8B521012A84213100B4DB44 /* PlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
+		C8B521012A84213100B4DB44 /* TrackListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackListView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +67,7 @@
 			isa = PBXGroup;
 			children = (
 				C81F86EA2A8946B000801709 /* Appearance.swift */,
+				C81F86D82A8815F900801709 /* Player.swift */,
 				C81F86EC2A8946D500801709 /* Theme.swift */,
 			);
 			path = "Business Logic";
@@ -82,6 +87,8 @@
 			children = (
 				C81F86F02A894C2500801709 /* Constants.swift */,
 				C81F86E82A8944B800801709 /* RootView.swift */,
+				C81F86F22A894EE600801709 /* PlayerView.swift */,
+				C81F86F42A89519900801709 /* RoundedBackground.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -128,8 +135,7 @@
 				C81F86E02A893D7800801709 /* Business Logic */,
 				C81F86E22A893D8D00801709 /* UI */,
 				C81F86E62A893E5A00801709 /* Utils */,
-				C8B521012A84213100B4DB44 /* PlayerView.swift */,
-				C81F86D82A8815F900801709 /* Player.swift */,
+				C8B521012A84213100B4DB44 /* TrackListView.swift */,
 				C81F86D62A8815DC00801709 /* FileProvider.swift */,
 				C83279B22A861E9700B4D229 /* Track.swift */,
 				C8B520F62A84208700B4DB44 /* Assets.xcassets */,
@@ -222,9 +228,11 @@
 				C81F86DC2A893CC200801709 /* Assembly.swift in Sources */,
 				C83279B32A861E9700B4D229 /* Track.swift in Sources */,
 				C81F86EF2A8946FB00801709 /* AppAssembly.swift in Sources */,
-				C8B521022A84213100B4DB44 /* PlayerView.swift in Sources */,
+				C81F86F32A894EE600801709 /* PlayerView.swift in Sources */,
+				C8B521022A84213100B4DB44 /* TrackListView.swift in Sources */,
 				C81F86ED2A8946D500801709 /* Theme.swift in Sources */,
 				C81F86D92A8815F900801709 /* Player.swift in Sources */,
+				C81F86F52A89519900801709 /* RoundedBackground.swift in Sources */,
 				C8B520F32A84208300B4DB44 /* MuzloApp.swift in Sources */,
 				C81F86F12A894C2500801709 /* Constants.swift in Sources */,
 			);

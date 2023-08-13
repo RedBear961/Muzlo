@@ -9,7 +9,7 @@ import SwiftUI
 import AVKit
 import ID3
 
-final class Player: ObservableObject {
+public final class Player: ObservableObject {
 
 	var players: [AudioPlayer] = []
 	var index: Int = 0
@@ -27,6 +27,14 @@ final class Player: ObservableObject {
 
 	func togglePlay() {
 		isPlaying ? pause() : play()
+	}
+
+	func back() {
+
+	}
+
+	func next() {
+		
 	}
 
 	func play() {

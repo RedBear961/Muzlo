@@ -19,21 +19,9 @@ public struct RootView: View {
 			HStack {
 				Sidebar()
 
-				VStack {
-					Rectangle()
-						.frame(height: 60)
-						.cornerRadius(.r12)
-						.foregroundColor(theme.current.lightBackground)
-						.overlay(
-							RoundedRectangle(radius: .r12)
-								.stroke(theme.current.textFieldBorder, lineWidth: 0.5)
-						)
-
-
-					Spacer()
-						.frame(height: 24)
-
+				VStack(spacing: 24) {
 					PlayerView()
+					TrackListView()
 				}
 			}
 			.padding([.bottom, .trailing], .p24)

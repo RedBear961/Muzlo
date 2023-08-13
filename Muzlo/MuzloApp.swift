@@ -11,12 +11,18 @@ import Swinject
 @main
 struct MuzloApp: App {
 
-	@InjectedResolver var resolver
+	@Injected var resolver: Resolver
 
 	var body: some Scene {
 		WindowGroup {
 			RootView()
 				.titlebar(visibility: .hidden)
+				.minimumWindowSize(width: 1500)
 		}
 	}
+}
+
+public enum ServiceType {
+
+	case resolver(Resolver.Type)
 }

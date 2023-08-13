@@ -59,6 +59,14 @@ extension Container {
 		_ = Assembler(assemblies, container: container)
 		return container
 	}()
+
+	#if DEBUG
+	public static func forPreview(_ factory: (Container) -> Void) -> Resolver {
+		let container = Container()
+		factory(container)
+		return container
+	}
+	#endif
 }
 
 @propertyWrapper
@@ -73,6 +81,13 @@ public struct Injected<Service> {
 	public var wrappedValue: Service { service }
 }
 
+extension Injected where Service == any Resolver {
+
+	public init(name: String? = nil) {
+		self.service = Container.default
+	}
+}
+
 @propertyWrapper
 public struct InjectedObject<Service: ObservableObject>: DynamicProperty {
 
@@ -84,16 +99,4 @@ public struct InjectedObject<Service: ObservableObject>: DynamicProperty {
 
 	public var wrappedValue: Service { service }
 	public var projectedValue: ObservedObject<Service>.Wrapper { $service }
-}
-
-@propertyWrapper
-public struct InjectedResolver {
-
-	private let _resolver: Resolver
-
-	public init(named: String? = nil) {
-		self._resolver = Container.default
-	}
-
-	public var wrappedValue: Resolver { _resolver }
 }

@@ -12,21 +12,21 @@ public protocol Theme {
 	var lightBackground: Color { get }
 
 	var darkBackground: Color { get }
-	
-	var textFieldBorder: Color { get}
+
+	var lightBorder: Color { get}
 }
 
 public final class DarkTheme: Theme {
 
 	public var lightBackground: Color {
-		Color(hex: "141414")
-	}
-
-	public var darkBackground: Color {
 		Color(hex: "222222")
 	}
 
-	public var textFieldBorder: Color {
+	public var darkBackground: Color {
+		Color(hex: "141414")
+	}
+
+	public var lightBorder: Color {
 		Color(hex: "555555")
 	}
 }

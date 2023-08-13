@@ -19,6 +19,14 @@ public extension View {
 			}
 		})
 	}
+
+	func minimumWindowSize(width: CGFloat = 0, height: CGFloat = 0) -> some View {
+		background(HostingWindow { window in
+			if let restrictions = window?.windowScene?.sizeRestrictions {
+				restrictions.minimumSize = CGSize(width: width, height: height)
+			}
+		})
+	}
 }
 
 private struct HostingWindow: UIViewRepresentable {

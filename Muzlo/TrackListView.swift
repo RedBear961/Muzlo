@@ -17,7 +17,7 @@ public struct Sidebar: View {
 	}
 }
 
-public struct PlayerView: View {
+public struct TrackListView: View {
 
 	@ObservedObject var player = Player()
 	@ObservedObject var queue = PlayQueue()
@@ -25,58 +25,48 @@ public struct PlayerView: View {
 	@State var text: String = ""
 
 	public var body: some View {
-		ZStack {
-			Color(hex: "222222")
-				.ignoresSafeArea()
-				.cornerRadius(12)
-				.overlay(
-					RoundedRectangle(cornerRadius: 12)
-						.stroke(Color(hex: "555555"), lineWidth: 0.5)
-				)
-
-			VStack(alignment: .leading) {
-				List {
-					Section {
-						textField()
-							.padding(.horizontal, 8)
-							.listRowInsets(.none)
-
-						Button(action: {}) {
-							HStack(spacing: 0) {
-								Spacer()
-									.frame(width: 9)
-
-								Image(systemName: "shuffle")
-									.resizable()
-									.aspectRatio(contentMode: .fit)
-									.frame(width: 26)
-
-								Spacer()
-									.frame(width: 21)
-
-								Text("Перемешать все")
-									.fontWeight(.medium)
-							}
-							.padding(2)
-						}
-						.foregroundColor(.blue)
-						.buttonStyle(.plain)
-						.frame(height: 44)
+		RoundedBackground {
+			List {
+				Section {
+					textField()
 						.padding(.horizontal, 8)
+						.listRowInsets(.none)
 
-						ForEach(queue.tracks, id: \.self) { track in
-							cell(for: track)
-								.padding(2)
+					Button(action: {}) {
+						HStack(spacing: 0) {
+							Spacer()
+								.frame(width: 9)
+
+							Image(systemName: "shuffle")
+								.resizable()
+								.aspectRatio(contentMode: .fit)
+								.frame(width: 26)
+
+							Spacer()
+								.frame(width: 21)
+
+							Text("Перемешать все")
+								.fontWeight(.medium)
 						}
-						.padding(.horizontal, 8)
+						.padding(2)
 					}
-					.listRowSeparator(.hidden)
-					.listRowBackground(Color.clear)
+					.foregroundColor(.blue)
+					.buttonStyle(.plain)
+					.frame(height: 44)
+					.padding(.horizontal, 8)
+
+					ForEach(queue.tracks, id: \.self) { track in
+						cell(for: track)
+							.padding(2)
+					}
+					.padding(.horizontal, 8)
 				}
-				.padding(.vertical, 8)
-				.listStyle(.plain)
-				.scrollContentBackground(.hidden)
+				.listRowSeparator(.hidden)
+				.listRowBackground(Color.clear)
 			}
+			.padding(.vertical, 8)
+			.listStyle(.plain)
+			.scrollContentBackground(.hidden)
 		}
 	}
 
@@ -116,13 +106,6 @@ public struct PlayerView: View {
 			Text(track.duration)
 				.foregroundColor(.gray)
 		}
-	}
-}
-
-struct SomeView: View {
-
-	var body: some View {
-		Text("123")
 	}
 }
 
