@@ -11,77 +11,96 @@ import ID3
 
 public final class Player: ObservableObject {
 
-	var players: [AudioPlayer] = []
-	var index: Int = 0
-	var urls: [URL] = []
-	var currentPlayer: AudioPlayer?
+	public struct TrackInfo {
 
-	@Published var sliderTime: Double = 0
-	@Published var duration: Double = 0
-	@Published var time: TimeInterval = 0
+		public let title: String
+		public let artist: String
+		public let duration: String
+		public let album: Image
+
+		public static var empty: TrackInfo {
+//			TrackInfo(
+//				title: "",
+//				artist: "",
+//				duration: "",
+//				album: .asset(.album)
+//			)
+			TrackInfo(
+				title: "Музыка нас связала",
+				artist: "Мираж",
+				duration: "2:42",
+				album: .album
+			)
+		}
+	}
+
 	@Published var isPlaying: Bool = false
+	@Published var canBack: Bool = false
+	@Published var canForward: Bool = true
+	@Published var canPlay: Bool = true
+	@Published var volume: CGFloat = 0.5
+	@Published var progress: CGFloat = 0.6
+
+	@Published var trackInfo: TrackInfo?
+
+	private var currentPlayer: AVAudioPlayer?
+	private var task: Task<Void, Error>?
 
 	init() {
-		_play()
+		let url = FileProvider.shared.urls.first!
+		self.currentPlayer = try! AVAudioPlayer(contentsOf: url)
+		currentPlayer?.volume = Float(volume)
 	}
 
-	func togglePlay() {
-		isPlaying ? pause() : play()
+	func play() {
+		guard let player = currentPlayer else { return }
+
+		if !isPlaying {
+			player.play()
+			task = Timer.timer(for: .milliseconds(500), handler: { [self] in
+				guard let player = currentPlayer else { return }
+				Task { @MainActor in
+					withAnimation {
+						progress = player.currentTime / player.duration
+					}
+				}
+			})
+		} else {
+			task?.cancel()
+			player.pause()
+		}
+
+		isPlaying = !isPlaying
 	}
+
+	func setVolume(_ volume: CGFloat) {
+		Task { @MainActor in
+			let volume = min(max(0, volume), 1)
+			self.currentPlayer?.volume = Float(volume)
+			self.volume = volume
+		}
+	}
+}
+
+extension Player {
 
 	func back() {
 
 	}
 
-	func next() {
-		
-	}
+	func forward() {
 
-	func play() {
-		isPlaying = true
-		currentPlayer?.play()
-	}
-
-	func pause() {
-		isPlaying = false
-		currentPlayer?.pause()
-	}
-
-	func _play() {
-		self.urls = FileProvider.shared.urls
-		let player = AudioPlayer(contentsOf: urls.first!)
-
-		let _ = try! ID3Decoder().decode(from: urls.first!)
-
-		currentPlayer = player
-		duration = player.duration
-		players.append(player)
 	}
 }
 
-final class AudioPlayer: NSObject {
+extension Timer {
 
-	private let player: AVAudioPlayer
-	private var observers: [NSKeyValueObservation] = []
-
-	init(contentsOf url: URL) {
-		self.player = try! AVAudioPlayer(contentsOf: url)
-		super.init()
-	}
-
-	var duration: TimeInterval {
-		player.duration
-	}
-
-	var currentTime: TimeInterval {
-		player.currentTime
-	}
-
-	func play() {
-		player.play()
-	}
-
-	func pause() {
-		player.pause()
+	static func timer(for duration: Duration, handler: @escaping () -> Void) -> Task<Void, Error> {
+		Task<Void, Error> {
+			while !Task.isCancelled {
+				try await Task.sleep(for: duration)
+				handler()
+			}
+		}
 	}
 }

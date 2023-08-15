@@ -13,7 +13,13 @@ public protocol Theme {
 
 	var darkBackground: Color { get }
 
-	var lightBorder: Color { get}
+	var lightBorder: Color { get }
+
+	var placeholder: Color { get }
+
+	var primary: Color { get }
+
+	var secondary: Color { get }
 }
 
 public final class DarkTheme: Theme {
@@ -28,5 +34,17 @@ public final class DarkTheme: Theme {
 
 	public var lightBorder: Color {
 		Color(hex: "555555")
+	}
+
+	public var placeholder: Color {
+		Color(hex: "454545")
+	}
+
+	public var primary: Color {
+		.white
+	}
+
+	public var secondary: Color {
+		.gray
 	}
 }

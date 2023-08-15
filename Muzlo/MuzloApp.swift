@@ -21,8 +21,3 @@ struct MuzloApp: App {
 		}
 	}
 }
-
-public enum ServiceType {
-
-	case resolver(Resolver.Type)
-}
