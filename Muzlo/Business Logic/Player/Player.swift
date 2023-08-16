@@ -15,24 +15,7 @@ public enum PlayerFailure: Error {
 	case unknown
 }
 
-extension Player {
-
-	public struct State {
-
-		var isPlaying: Bool = false
-
-		var canBack: Bool = false
-		var canForward: Bool = false
-		var canPlay: Bool = false
-
-		var progress: CGFloat = 0
-		var time: String = ""
-	}
-}
-
 public final class Player: NSObject, ObservableObject {
-
-	@Injected var fileProvider: FileProvider
 
 	@Published var state: State
 	@Published var volume: CGFloat = 0.5
@@ -50,11 +33,6 @@ public final class Player: NSObject, ObservableObject {
 		self.queue = Stack()
 		super.init()
 		self.progressTask = Task { try await handleProgress() }
-
-		Task {
-			let urls = try fileProvider.load()
-			append(urls: urls)
-		}
 	}
 
 	/// Запускает воспроизведение текущего трека.
@@ -150,21 +128,11 @@ public final class Player: NSObject, ObservableObject {
 
 	// MARK: -
 
-	func append(urls: [URL]) {
-		Task {
-			let builder = TrackBuilder()
-			var tracks = [TrackInfo]()
-			for url in urls {
-				let info = try await builder.trackInfo(from: url)
-				tracks.append(info)
-			}
-
-			queue.append(tracks)
-
-			await MainActor.run {
-				state.canForward = !queue.isEmpty
-				state.canPlay = currentPlayer != nil || state.canForward
-			}
+	public func append(tracks: [TrackInfo]) {
+		queue.append(tracks)
+		Task { @MainActor in
+			state.canForward = !queue.isEmpty
+			state.canPlay = currentPlayer != nil || state.canForward
 		}
 	}
 

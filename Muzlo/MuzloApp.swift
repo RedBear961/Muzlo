@@ -12,6 +12,7 @@ import Swinject
 struct MuzloApp: App {
 
 	@Injected var resolver: Resolver
+	@Injected var startup: Startup
 
 	var body: some Scene {
 		WindowGroup {

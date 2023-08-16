@@ -28,6 +28,9 @@
 		C87B40972A8BF86F0029937F /* View+frame.swift in Sources */ = {isa = PBXBuildFile; fileRef = C87B40962A8BF86F0029937F /* View+frame.swift */; };
 		C87B409A2A8D4C430029937F /* Stack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C87B40992A8D4C430029937F /* Stack.swift */; };
 		C87B409E2A8D4EA90029937F /* Color+hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = C87B409D2A8D4EA90029937F /* Color+hex.swift */; };
+		C87B40A02A8D50A60029937F /* Player.State.swift in Sources */ = {isa = PBXBuildFile; fileRef = C87B409F2A8D50A60029937F /* Player.State.swift */; };
+		C87B40A22A8D52A80029937F /* Startup.swift in Sources */ = {isa = PBXBuildFile; fileRef = C87B40A12A8D52A80029937F /* Startup.swift */; };
+		C87B40A42A8D53140029937F /* TrackBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C87B40A32A8D53140029937F /* TrackBuilder.swift */; };
 		C8B520F32A84208300B4DB44 /* MuzloApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8B520F22A84208300B4DB44 /* MuzloApp.swift */; };
 		C8B520F72A84208700B4DB44 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C8B520F62A84208700B4DB44 /* Assets.xcassets */; };
 		C8B521022A84213100B4DB44 /* TrackListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8B521012A84213100B4DB44 /* TrackListView.swift */; };
@@ -54,6 +57,9 @@
 		C87B40962A8BF86F0029937F /* View+frame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+frame.swift"; sourceTree = "<group>"; };
 		C87B40992A8D4C430029937F /* Stack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stack.swift; sourceTree = "<group>"; };
 		C87B409D2A8D4EA90029937F /* Color+hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+hex.swift"; sourceTree = "<group>"; };
+		C87B409F2A8D50A60029937F /* Player.State.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.State.swift; sourceTree = "<group>"; };
+		C87B40A12A8D52A80029937F /* Startup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Startup.swift; sourceTree = "<group>"; };
+		C87B40A32A8D53140029937F /* TrackBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackBuilder.swift; sourceTree = "<group>"; };
 		C8B520EF2A84208300B4DB44 /* Muzlo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Muzlo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C8B520F22A84208300B4DB44 /* MuzloApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuzloApp.swift; sourceTree = "<group>"; };
 		C8B520F62A84208700B4DB44 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -78,10 +84,11 @@
 		C81F86E02A893D7800801709 /* Business Logic */ = {
 			isa = PBXGroup;
 			children = (
-				C81F86EA2A8946B000801709 /* Appearance.swift */,
-				C81F86D82A8815F900801709 /* Player.swift */,
-				C81F86EC2A8946D500801709 /* Theme.swift */,
+				C87B40A62A8D536E0029937F /* Appearance */,
+				C87B40A52A8D53660029937F /* Player */,
 				C81F86D62A8815DC00801709 /* FileProvider.swift */,
+				C87B40A12A8D52A80029937F /* Startup.swift */,
+				C87B40A32A8D53140029937F /* TrackBuilder.swift */,
 			);
 			path = "Business Logic";
 			sourceTree = "<group>";
@@ -149,6 +156,24 @@
 				C87B40902A8BEA890029937F /* Asset.swift */,
 			);
 			path = Resource;
+			sourceTree = "<group>";
+		};
+		C87B40A52A8D53660029937F /* Player */ = {
+			isa = PBXGroup;
+			children = (
+				C81F86D82A8815F900801709 /* Player.swift */,
+				C87B409F2A8D50A60029937F /* Player.State.swift */,
+			);
+			path = Player;
+			sourceTree = "<group>";
+		};
+		C87B40A62A8D536E0029937F /* Appearance */ = {
+			isa = PBXGroup;
+			children = (
+				C81F86EA2A8946B000801709 /* Appearance.swift */,
+				C81F86EC2A8946D500801709 /* Theme.swift */,
+			);
+			path = Appearance;
 			sourceTree = "<group>";
 		};
 		C8B520E62A84208300B4DB44 = {
@@ -264,10 +289,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				C81F86E92A8944B800801709 /* RootView.swift in Sources */,
+				C87B40A22A8D52A80029937F /* Startup.swift in Sources */,
 				C87B409E2A8D4EA90029937F /* Color+hex.swift in Sources */,
 				C81F86EB2A8946B000801709 /* Appearance.swift in Sources */,
+				C87B40A02A8D50A60029937F /* Player.State.swift in Sources */,
 				C81F86E52A893DA300801709 /* View+titlebar.swift in Sources */,
 				C81F86D72A8815DC00801709 /* FileProvider.swift in Sources */,
+				C87B40A42A8D53140029937F /* TrackBuilder.swift in Sources */,
 				C81F86DC2A893CC200801709 /* Assembly.swift in Sources */,
 				C83279B32A861E9700B4D229 /* Track.swift in Sources */,
 				C87B40952A8BEB160029937F /* EnvironmentsValues.swift in Sources */,
