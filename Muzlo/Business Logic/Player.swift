@@ -8,98 +8,185 @@
 import SwiftUI
 import AVKit
 import ID3
+import Logger
 
-public final class Player: ObservableObject {
+public enum PlayerFailure: Error {
 
-	public struct TrackInfo {
+	case unknown
+}
 
-		public let title: String
-		public let artist: String
-		public let duration: String
-		public let album: Image
+extension Player {
 
-		public static var empty: TrackInfo {
-//			TrackInfo(
-//				title: "",
-//				artist: "",
-//				duration: "",
-//				album: .asset(.album)
-//			)
-			TrackInfo(
-				title: "Музыка нас связала",
-				artist: "Мираж",
-				duration: "2:42",
-				album: .album
-			)
-		}
+	public struct State {
+
+		var isPlaying: Bool = false
+
+		var canBack: Bool = false
+		var canForward: Bool = false
+		var canPlay: Bool = false
+
+		var progress: CGFloat = 0
+		var time: String = ""
 	}
+}
 
-	@Published var isPlaying: Bool = false
-	@Published var canBack: Bool = false
-	@Published var canForward: Bool = true
-	@Published var canPlay: Bool = true
+public final class Player: NSObject, ObservableObject {
+
+	@Injected var fileProvider: FileProvider
+
+	@Published var state: State
 	@Published var volume: CGFloat = 0.5
-	@Published var progress: CGFloat = 0.6
-
 	@Published var trackInfo: TrackInfo?
 
 	private var currentPlayer: AVAudioPlayer?
-	private var task: Task<Void, Error>?
+	private var progressTask: Task<Void, Error>?
 
-	init() {
-		let url = FileProvider.shared.urls.first!
-		self.currentPlayer = try! AVAudioPlayer(contentsOf: url)
-		currentPlayer?.volume = Float(volume)
+	private var history: Stack<TrackInfo>
+	private var queue: Stack<TrackInfo>
+
+	override init() {
+		self.state = State()
+		self.history = Stack()
+		self.queue = Stack()
+		super.init()
+		self.progressTask = Task { try await handleProgress() }
+
+		Task {
+			let urls = try fileProvider.load()
+			append(urls: urls)
+		}
 	}
 
-	func play() {
-		guard let player = currentPlayer else { return }
-
-		if !isPlaying {
-			player.play()
-			task = Timer.timer(for: .milliseconds(500), handler: { [self] in
-				guard let player = currentPlayer else { return }
-				Task { @MainActor in
-					withAnimation {
-						progress = player.currentTime / player.duration
-					}
-				}
-			})
-		} else {
-			task?.cancel()
-			player.pause()
+	/// Запускает воспроизведение текущего трека.
+	/// Если нет текущего трека, то возьмет трек из очереди проигрывания.
+	public func play() {
+		guard !state.isPlaying else {
+			Logger.shared.log(
+				level: .warning,
+				"Attempt to call `Player.play()` when playback is running!"
+			)
+			return
 		}
 
-		isPlaying = !isPlaying
+		if let player = currentPlayer {
+			player.play()
+			state.isPlaying = true
+			return
+		}
+
+		guard state.canForward else {
+			Logger.shared.log(
+				level: .error,
+				"Attempt to call `Player.play()` with an empty play queue!"
+			)
+			return
+		}
+
+		forward()
+		state.isPlaying = true
 	}
 
-	func setVolume(_ volume: CGFloat) {
+	/// Останавливает воспроизведение.
+	public func pause() {
+		guard let player = currentPlayer, state.isPlaying else {
+			Logger.shared.log(
+				level: .warning,
+				"Attempt to call `Player.pause()` when playback is stopped"
+			)
+			return
+		}
+
+		player.pause()
+		state.isPlaying = false
+	}
+
+
+	/// Переключает на предыдущую композицию.
+	public func back() {
+		guard let currentInfo = trackInfo else {
+			Logger.shared.log(
+				level: .error,
+				"Attempt to call `Player.back()` with an empty history!"
+			)
+			return
+		}
+
+		queue.push(currentInfo)
+		state.canForward = true
+
+		let info = try! history.pop()
+		playTrack(info)
+		state.canBack = !history.isEmpty
+	}
+
+	/// Переключает на следующую композицию.
+	public func forward() {
+		guard state.canForward else {
+			Logger.shared.log(
+				level: .warning,
+				"Attempt to call `Player.back()` with an empty history!"
+			)
+			return
+		}
+
+		if let currentInfo = trackInfo {
+			history.push(currentInfo)
+			state.canBack = true
+		}
+
+		let info = try! queue.pop()
+		playTrack(info)
+		state.canForward = !queue.isEmpty
+	}
+
+	/// Устанавливает громкость плеера в интервале от `0` до `1`.
+	public func set(volume: CGFloat) {
 		Task { @MainActor in
 			let volume = min(max(0, volume), 1)
 			self.currentPlayer?.volume = Float(volume)
 			self.volume = volume
 		}
 	}
-}
 
-extension Player {
+	// MARK: -
 
-	func back() {
+	func append(urls: [URL]) {
+		Task {
+			let builder = TrackBuilder()
+			var tracks = [TrackInfo]()
+			for url in urls {
+				let info = try await builder.trackInfo(from: url)
+				tracks.append(info)
+			}
 
+			queue.append(tracks)
+
+			await MainActor.run {
+				state.canForward = !queue.isEmpty
+				state.canPlay = currentPlayer != nil || state.canForward
+			}
+		}
 	}
 
-	func forward() {
+	// MARK: - Private
 
+	private func playTrack(_ track: TrackInfo) {
+		let player = try! AVAudioPlayer(contentsOf: track.url)
+		player.volume = Float(volume)
+		player.play()
+
+		self.currentPlayer = player
+		self.trackInfo = track
 	}
-}
 
-extension Timer {
-
-	static func timer(for duration: Duration, handler: @escaping () -> Void) -> Task<Void, Error> {
-		Task<Void, Error> {
-			while !Task.isCancelled {
-				try await Task.sleep(for: duration)
-				handler()
+	private func handleProgress() async throws {
+		while !Task.isCancelled {
+			try await Task.sleep(for: .microseconds(500))
+			guard let player = currentPlayer else { continue }
+			await MainActor.run {
+				withAnimation {
+					state.progress = player.currentTime / player.duration
+				}
 			}
 		}
 	}

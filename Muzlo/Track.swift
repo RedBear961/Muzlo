@@ -16,3 +16,22 @@ struct Track: Hashable {
 	let image: UIImage
 	let duration: String
 }
+
+public struct TrackInfo {
+
+	public let title: String
+	public let artist: String
+	public let duration: String
+	public let album: Image
+	public let url: URL
+
+	public static var empty: TrackInfo {
+		TrackInfo(
+			title: "",
+			artist: "",
+			duration: "",
+			album: .album,
+			url: URL(string: "http://yourmom.zip")!
+		)
+	}
+}

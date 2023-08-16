@@ -57,27 +57,27 @@ public struct PlayerView: View {
 		HStack(spacing: kControlsSpacing) {
 			// Перемешать
 			PlainButton(image: .shuffle)
-				.disabled(!player.canPlay)
+				.disabled(!player.state.canPlay)
 
 			// Предыдущий трек
 			PlainButton(image: .backward)
 				.bind(to: player.back)
-				.disabled(!player.canBack)
+				.disabled(!player.state.canBack)
 
 			// Плей/пауза
-			PlainButton(image: player.isPlaying ? .pause : .play)
-				.bind(to: player.play)
+			PlainButton(image: player.state.isPlaying ? .pause : .play)
+				.bind(to: { player.state.isPlaying ? player.pause() : player.play() })
 				.height(kPlayButtonHeight)
-				.disabled(!player.canPlay)
+				.disabled(!player.state.canPlay)
 
 			// Следующий трек
 			PlainButton(image: .forward)
 				.bind(to: player.forward)
-				.disabled(!player.canForward)
+				.disabled(!player.state.canForward)
 
 			// Повторять
 			PlainButton(image: .repeat)
-				.disabled(!player.canPlay)
+				.disabled(!player.state.canPlay)
 		}
 	}
 
@@ -123,7 +123,7 @@ public struct PlayerView: View {
 						.foregroundColor(theme.placeholder)
 					slider // Слайдер прогресса
 						.foregroundColor(theme.primary)
-						.frame(width: width * player.progress)
+						.frame(width: width * player.state.progress)
 				}
 			}
 			.frame(height: kSliderHeight)
@@ -133,7 +133,7 @@ public struct PlayerView: View {
 	private var volume: some View {
 		HStack {
 			PlainButton(image: .speakerOff) // Выключатель звука
-				.bind(to: { player.setVolume(0) })
+				.bind(to: { player.set(volume: 0) })
 
 			GeometryReader { geometry in
 				let width = geometry.size.width
@@ -155,7 +155,7 @@ public struct PlayerView: View {
 						.gesture(
 							DragGesture(minimumDistance: 0)
 								.onChanged {
-									player.setVolume($0.location.x / width)
+									player.set(volume: $0.location.x / width)
 								}
 						)
 				}
@@ -163,7 +163,7 @@ public struct PlayerView: View {
 			.frame(width: kVolumeSliderWidth, height: kThumbSize)
 
 			PlainButton(image: .speakerOn) // Включатель звука
-				.bind(to: { player.setVolume(1) })
+				.bind(to: { player.set(volume: 1) })
 		}
 	}
 
