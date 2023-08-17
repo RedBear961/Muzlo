@@ -10,6 +10,7 @@ import Foundation
 public protocol FileProvider {
 
 	func load() throws -> [URL]
+	func copyFile(from url: URL, with id: UUID) throws -> URL
 }
 
 private let kSupportedFormats = ["mp3"]
@@ -40,5 +41,13 @@ public final class FileProviderImpl: FileProvider {
 
 			return URL(filePath: appDirectory).appending(path: file)
 		}
+	}
+
+	public func copyFile(from url: URL, with id: UUID) throws -> URL {
+		let pathExtension = url.pathExtension
+		var newUrl = URL(filePath: appDirectory)
+		newUrl.append(component: "\(id.uuidString).\(pathExtension)")
+		try fileManager.moveItem(at: url, to: newUrl)
+		return newUrl
 	}
 }

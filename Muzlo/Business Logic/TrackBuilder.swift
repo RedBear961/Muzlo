@@ -11,25 +11,32 @@ import AVFoundation
 
 public protocol TrackBuilder {
 
+	func track(from url: URL) async throws -> Track
+
 	func trackInfo(from url: URL) async throws -> TrackInfo
 }
 
 public final class TrackBuilderImpl: TrackBuilder {
 
-//	var templatePicture = UIImage(named: "ic_album")!
+	@Injected private var decoder: ID3Decoder
+	@Injected private var fileProvider: FileProvider
+	@ManagedObjectContext private var context
 
-//	func track(from url: URL) async throws -> Track {
-//		let meta = try ID3Decoder().decode(from: url)
-//		let asset = AVAsset(url: url)
-//		let duration = try await asset.load(.duration)
-//		return Track(
-//			title: meta.title,
-//			artist: meta.artist,
-//			album: meta.album,
-//			image: meta.image ?? templatePicture,
-//			duration: String(format: "%02d:%02d", duration.minutes, duration.seconds % 60)
-//		)
-//	}
+	public func track(from url: URL) async throws -> Track {
+		let id = UUID()
+		let url = try fileProvider.copyFile(from: url, with: id)
+		let meta = try decoder.decode(from: url)
+		let duration = try await duration(from: url)
+		let _ = image(from: meta)
+
+		let track = Track(context: context)
+		track.name = meta.title
+		track.id = id
+		track.duration = duration
+		track.url = url
+
+		return track
+	}
 
 	public func trackInfo(from url: URL) async throws -> TrackInfo {
 		let meta = try ID3Decoder().decode(from: url)
@@ -44,5 +51,17 @@ public final class TrackBuilderImpl: TrackBuilder {
 			album: image,
 			url: url
 		)
+	}
+
+	// MARK: - Private
+
+	private func duration(from url: URL) async throws -> String {
+		let asset = AVAsset(url: url)
+		let time =  try! await asset.load(.duration)
+		return "\(time.minutes):\(format: "%02d", time.seconds % 60)"
+	}
+
+	private func image(from meta: ID3Meta) -> UIImage {
+		return UIImage(named: "ic_album")!
 	}
 }

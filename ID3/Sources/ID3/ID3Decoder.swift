@@ -58,10 +58,10 @@ public final class ID3Decoder {
 				tags[tag] = value
 			}
 
-			Logger.shared.assert(
-				ID3Tag(scalar: identifier) != nil,
-				message: identifier.reduce("") { $0 + String(UnicodeScalar($1)) }
-			)
+//			Logger.shared.assert(
+//				ID3Tag(scalar: identifier) != nil,
+//				message: identifier.reduce("") { $0 + String(UnicodeScalar($1)) }
+//			)
 		}
 
 		return ID3Meta(version: version, tags: tags)

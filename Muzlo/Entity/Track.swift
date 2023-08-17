@@ -7,15 +7,30 @@
 
 import Foundation
 import SwiftUI
+import CoreData
 
-//struct Track: Hashable {
-//
-//	let title: String
-//	let artist: String
-//	let album: String
-//	let image: UIImage
-//	let duration: String
-//}
+public final class Track: NSManagedObject {
+
+	@NSManaged public var name: String
+	@NSManaged public var duration: String
+	@NSManaged public var id: UUID
+	@NSManaged public var url: URL
+}
+
+public final class Artist: NSManagedObject {
+
+	@NSManaged public var name: String
+}
+
+public final class Genre: NSManagedObject {
+
+	@NSManaged public var name: String
+}
+
+public final class Album: NSManagedObject {
+
+	@NSManaged public var name: String
+}
 
 public struct TrackInfo {
 

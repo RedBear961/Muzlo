@@ -8,28 +8,13 @@
 import Foundation
 import Swinject
 import SwiftUI
+import ID3
 
 final class AppAssembly: AutoAssembly {
 
 	func appearance() {
 		container.register(Appearance.self) { _ in Appearance() }
 			.inObjectScope(.container)
-	}
-
-	func queuePlayer() {
-		container.register(QueuePlayer.self) {  _ in QueuePlayer() }
-			.inObjectScope(.container)
-	}
-
-	func radioPlayer() {
-		container.register(RadioPlayer.self) {  _ in RadioPlayer() }
-			.inObjectScope(.container)
-	}
-
-	func playback() {
-		container.register(Playback.self) { (r) in
-			Playback(player: r.resolve(QueuePlayer.self)!)
-		}.inObjectScope(.container)
 	}
 
 	func fileProvider() {
@@ -46,5 +31,13 @@ final class AppAssembly: AutoAssembly {
 
 	func trackBuilder() {
 		container.register(TrackBuilder.self) { _ in TrackBuilderImpl() }
+	}
+
+	func id3Decoder() {
+		container.register(ID3Decoder.self) { _ in ID3Decoder() }
+	}
+
+	func coreDataStorage() {
+		container.register(CoreDataStorage.self) { _ in CoreDataStorageImpl() }
 	}
 }

@@ -100,3 +100,15 @@ public struct InjectedObject<Service: ObservableObject>: DynamicProperty {
 	public var wrappedValue: Service { service }
 	public var projectedValue: ObservedObject<Service>.Wrapper { $service }
 }
+
+@propertyWrapper
+public struct ManagedObjectContext {
+
+	private let context: NSManagedObjectContext
+
+	public init() {
+		self.context = Container.default.resolve(CoreDataStorage.self)!.context
+	}
+
+	public var wrappedValue: NSManagedObjectContext { context }
+}

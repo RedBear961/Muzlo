@@ -11,7 +11,7 @@ public struct RootView: View {
 
 	@InjectedObject var theme: Appearance
 	@InjectedObject var playback: Playback
-	@Injected var dropHandler: DropDelegate
+	@Injected var dropHandler: DropHandler
 
 	public var body: some View {
 		ZStack {
@@ -31,7 +31,7 @@ public struct RootView: View {
 			.padding([.bottom, .trailing], .p24)
 		}
 		.onDrop(of: [.mp3], isTargeted: nil) { providers in
-			playback.process(providers: providers)
+			dropHandler.handle(providers: providers)
 		}
 	}
 }
