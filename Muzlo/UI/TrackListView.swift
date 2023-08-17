@@ -26,47 +26,50 @@ public struct TrackListView: View {
 
 	public var body: some View {
 		RoundedBackground {
-			List {
-				Section {
-					textField()
-						.padding(.horizontal, 8)
-						.listRowInsets(.none)
+			NavigationStack {
+				List {
+					Section {
+						textField()
+							.padding(.horizontal, 8)
+							.listRowInsets(.none)
 
-					Button(action: {}) {
-						HStack(spacing: 0) {
-							Spacer()
-								.frame(width: 9)
+						Button(action: {}) {
+							HStack(spacing: 0) {
+								Spacer()
+									.frame(width: 9)
 
-							Image(systemName: "shuffle")
-								.resizable()
-								.aspectRatio(contentMode: .fit)
-								.frame(width: 26)
+								Image(systemName: "shuffle")
+									.resizable()
+									.aspectRatio(contentMode: .fit)
+									.frame(width: 26)
 
-							Spacer()
-								.frame(width: 21)
+								Spacer()
+									.frame(width: 21)
 
-							Text("Перемешать все")
-								.fontWeight(.medium)
-						}
-						.padding(2)
-					}
-					.foregroundColor(.blue)
-					.buttonStyle(.plain)
-					.frame(height: 44)
-					.padding(.horizontal, 8)
-
-					ForEach(queue.tracks, id: \.self) { track in
-						cell(for: track)
+								Text("Перемешать все")
+									.fontWeight(.medium)
+							}
 							.padding(2)
+						}
+						.foregroundColor(.blue)
+						.buttonStyle(.plain)
+						.frame(height: 44)
+						.padding(.horizontal, 8)
+
+						ForEach(queue.tracks, id: \.self) { track in
+							cell(for: track)
+								.padding(2)
+						}
+						.padding(.horizontal, 8)
 					}
-					.padding(.horizontal, 8)
+					.listRowSeparator(.hidden)
+					.listRowBackground(Color.clear)
 				}
-				.listRowSeparator(.hidden)
-				.listRowBackground(Color.clear)
+				.padding(.vertical, 8)
+				.listStyle(.plain)
+				.scrollContentBackground(.hidden)
 			}
-			.padding(.vertical, 8)
-			.listStyle(.plain)
-			.scrollContentBackground(.hidden)
+			.cornerRadius(12)
 		}
 	}
 

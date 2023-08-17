@@ -8,24 +8,19 @@
 import SwiftUI
 import Swinject
 
-private let kControlsSpacing = 24.0
-private let kPlayButtonHeight = 26.0
 private let kAlbumSize = 52.0
-private let kTrackSpacing = 12.0
-private let kTrackInfoSpacing = 6.0
-private let kVolumeSliderWidth = 90.0
-private let kThumbSize = 15.0
+private let kVolumeThumbSize = 15.0
+private let kProgressThumbSize = 10.0
 private let kSliderHeight = 3.0
-private let kTrailingOffset = 32.0
-private let kPlayerHeight = 70.0
 
 public struct PlayerView: View {
 
-	@InjectedObject var theme: Appearance
-	@EnvironmentObject var player: Player
+	@InjectedObject private var theme: Appearance
+	@EnvironmentObject private var player: Player
 
-	@State var isDragging = false
-	@State var progress: CGFloat = 0
+	@State private var isDragging = false
+	@State private var isProgressThumbVisisble = false
+	@State private var progress: CGFloat = 0
 
 	public var body: some View {
 		RoundedBackground {
@@ -38,6 +33,11 @@ public struct PlayerView: View {
 				Spacer()
 
 				track
+					.onHover { isHover in
+						withAnimation {
+							self.isProgressThumbVisisble = isHover
+						}
+					}
 
 				Spacer()
 
@@ -48,16 +48,16 @@ public struct PlayerView: View {
 				options
 
 				Spacer()
-					.frame(width: kTrailingOffset)
+					.frame(width: 32)
 			}
 		}
-		.frame(height: kPlayerHeight)
+		.frame(height: 70)
 	}
 
 	// MARK: - Private
 
 	private var controls: some View {
-		HStack(spacing: kControlsSpacing) {
+		HStack(spacing: 24) {
 			// Перемешать
 			PlainButton(image: .shuffle)
 				.disabled(!player.state.canPlay)
@@ -70,7 +70,7 @@ public struct PlayerView: View {
 			// Плей/пауза
 			PlainButton(image: player.state.isPlaying ? .pause : .play)
 				.bind(to: { player.state.isPlaying ? player.pause() : player.play() })
-				.height(kPlayButtonHeight)
+				.height(26)
 				.disabled(!player.state.canPlay)
 
 			// Следующий трек
@@ -85,7 +85,7 @@ public struct PlayerView: View {
 	}
 
 	private var track: some View {
-		HStack(spacing: kTrackSpacing) {
+		HStack(spacing: 12) {
 			let info = player.trackInfo ?? .empty
 			info.album
 				.resizable()
@@ -98,7 +98,7 @@ public struct PlayerView: View {
 	}
 
 	private var trackInfo: some View {
-		VStack(spacing: kTrackInfoSpacing) {
+		VStack(spacing: 6) {
 			let info = player.trackInfo ?? .empty
 			let theme = theme.current
 			HStack {
@@ -114,45 +114,54 @@ public struct PlayerView: View {
 
 				Spacer()
 
-				Text(info.duration) // Длительность
+				Text(player.state.time) // Оставшеейся время
 					.font(.system(size: 16))
 					.foregroundColor(theme.secondary)
+					.animation(nil)
 			}
 			.frame(height: 40)
 
-			GeometryReader { geometry in
-				let width = geometry.size.width
-				let progress = isDragging ? progress : player.state.progress
-				let offset = (width - (kSliderHeight + 3)) * progress
-				ZStack(alignment: .leading) {
-					slider // Фон слайдера прогресса
-						.foregroundColor(theme.placeholder)
-						.frame(height: kSliderHeight)
-					slider // Слайдер прогресса
-						.foregroundColor(theme.primary)
-						.frame(height: kSliderHeight)
-						.frame(width: width * progress)
-
-					Circle()
-						.foregroundColor(theme.primary)
-						.frame(size: kSliderHeight + 3)
-						.offset(x: offset)
-						.gesture(
-							DragGesture()
-								.onChanged({ value in
-									isDragging = true
-									self.progress = value.location.x / width
-								})
-								.onEnded({ value in
-									isDragging = false
-									self.progress = value.location.x / width
-									player.seek(to: progress)
-								})
-						)
-				}
-			}
-			.frame(height: kSliderHeight + 3)
+			progressSlider // Слайдер прогресса
 		}
+	}
+
+	private var progressSlider: some View {
+		GeometryReader { geometry in
+			let theme = theme.current
+			let width = geometry.size.width
+			let currentProgress = isDragging ? progress : player.state.progress
+			let offset = (width - (kProgressThumbSize)) * currentProgress
+
+			let gesture = DragGesture(minimumDistance: 0)
+				.onChanged { value in
+					isDragging = true
+					progress = value.location.x / width
+				}
+				.onEnded { value in
+					isDragging = false
+					progress = value.location.x / width
+					player.seek(to: progress)
+				}
+
+			ZStack(alignment: .leading) {
+				PlayerSlider() // Фон слайдера прогресса
+					.foregroundColor(theme.placeholder)
+					.frame(height: kSliderHeight)
+				PlayerSlider() // Слайдер прогресса
+					.foregroundColor(theme.primary)
+					.frame(height: kSliderHeight)
+					.frame(width: width * currentProgress)
+
+				Circle() // Ползунок слайдера
+					.foregroundColor(theme.primary)
+					.frame(size: kProgressThumbSize)
+					.offset(x: offset)
+					.opacity(isProgressThumbVisisble ? 1 : 0)
+					.gesture(gesture)
+			}
+			.simultaneousGesture(gesture)
+		}
+		.frame(height: kProgressThumbSize)
 	}
 
 	private var volume: some View {
@@ -163,29 +172,29 @@ public struct PlayerView: View {
 			GeometryReader { geometry in
 				let width = geometry.size.width
 				let theme = theme.current
+
+				let gesture = DragGesture(minimumDistance: 0)
+					.onChanged { player.set(volume: $0.location.x / width) }
+
 				ZStack(alignment: .leading) {
-					slider // Фон слайдера громкости
+					PlayerSlider() // Фон слайдера громкости
 						.foregroundColor(theme.placeholder)
 						.frame(height: kSliderHeight)
 
-					slider // Слайдер громкости
+					PlayerSlider() // Слайдер громкости
 						.foregroundColor(theme.primary)
 						.frame(width: width * player.volume)
 						.frame(height: kSliderHeight)
 
 					Circle() // Ползунок слайдера
 						.foregroundColor(theme.primary)
-						.frame(size: kThumbSize)
-						.offset(x: (width - kThumbSize) * player.volume)
-						.gesture(
-							DragGesture(minimumDistance: 0)
-								.onChanged {
-									player.set(volume: $0.location.x / width)
-								}
-						)
+						.frame(size: kVolumeThumbSize)
+						.offset(x: (width - kVolumeThumbSize) * player.volume)
+						.gesture(gesture)
 				}
+				.simultaneousGesture(gesture)
 			}
-			.frame(width: kVolumeSliderWidth, height: kThumbSize)
+			.frame(width: 90, height: kVolumeThumbSize)
 
 			PlainButton(image: .speakerOn) // Включатель звука
 				.bind(to: { player.set(volume: 1) })
@@ -193,28 +202,18 @@ public struct PlayerView: View {
 	}
 
 	private var options: some View {
-		HStack(spacing: kControlsSpacing) {
+		HStack(spacing: 24) {
 			PlainButton(image: .lyrics)
 
 			PlainButton(image: .list)
 		}
 	}
-
-	private var slider: some View {
-		RoundedRectangle(cornerRadius: kSliderHeight / 2)
-	}
 }
 
-struct PlayerView_Previews: PreviewProvider {
+// Обертка для всех сладйеров плеера
+fileprivate struct PlayerSlider: View {
 
-	static var container = Container.forPreview { container in
-		container.register(Player.self) { _ in Player() }
-		container.register(Appearance.self) { _ in Appearance() }
-	}
-
-	static var previews: some View {
-		PlayerView()
-			.frame(width: 1200)
-			.environmentObject(container.resolve(Player.self)!)
+	var body: some View {
+		RoundedRectangle(cornerRadius: 1.5)
 	}
 }

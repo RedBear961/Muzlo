@@ -161,6 +161,7 @@ public final class QueuePlayer: Player {
 			await MainActor.run {
 				withAnimation {
 					state.progress = player.currentTime / player.duration
+					state.time = (player.duration - player.currentTime).toString()
 				}
 			}
 		}

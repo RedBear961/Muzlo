@@ -36,6 +36,8 @@
 		C8B770A52A8E3FC8009C34D2 /* QueuePlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8B770A42A8E3FC8009C34D2 /* QueuePlayer.swift */; };
 		C8B770A72A8E400C009C34D2 /* RadioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8B770A62A8E400C009C34D2 /* RadioPlayer.swift */; };
 		C8B770A92A8E4216009C34D2 /* Playback.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8B770A82A8E4216009C34D2 /* Playback.swift */; };
+		C8B770AC2A8E6A61009C34D2 /* Time+toString.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8B770AB2A8E6A61009C34D2 /* Time+toString.swift */; };
+		C8B770AE2A8E6A7A009C34D2 /* String+Interpolation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8B770AD2A8E6A7A009C34D2 /* String+Interpolation.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -69,6 +71,8 @@
 		C8B770A42A8E3FC8009C34D2 /* QueuePlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueuePlayer.swift; sourceTree = "<group>"; };
 		C8B770A62A8E400C009C34D2 /* RadioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadioPlayer.swift; sourceTree = "<group>"; };
 		C8B770A82A8E4216009C34D2 /* Playback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Playback.swift; sourceTree = "<group>"; };
+		C8B770AB2A8E6A61009C34D2 /* Time+toString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Time+toString.swift"; sourceTree = "<group>"; };
+		C8B770AD2A8E6A7A009C34D2 /* String+Interpolation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Interpolation.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -121,6 +125,7 @@
 		C81F86E62A893E5A00801709 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				C8B770AA2A8E6A52009C34D2 /* Foundation */,
 				C81F86E72A893E6000801709 /* SwiftUI */,
 			);
 			path = Utils;
@@ -217,6 +222,15 @@
 			path = Muzlo;
 			sourceTree = "<group>";
 		};
+		C8B770AA2A8E6A52009C34D2 /* Foundation */ = {
+			isa = PBXGroup;
+			children = (
+				C8B770AB2A8E6A61009C34D2 /* Time+toString.swift */,
+				C8B770AD2A8E6A7A009C34D2 /* String+Interpolation.swift */,
+			);
+			path = Foundation;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -303,7 +317,9 @@
 				C81F86D72A8815DC00801709 /* FileProvider.swift in Sources */,
 				C87B40A42A8D53140029937F /* TrackBuilder.swift in Sources */,
 				C81F86DC2A893CC200801709 /* Assembly.swift in Sources */,
+				C8B770AE2A8E6A7A009C34D2 /* String+Interpolation.swift in Sources */,
 				C83279B32A861E9700B4D229 /* Track.swift in Sources */,
+				C8B770AC2A8E6A61009C34D2 /* Time+toString.swift in Sources */,
 				C87B40952A8BEB160029937F /* EnvironmentsValues.swift in Sources */,
 				C81F86EF2A8946FB00801709 /* AppAssembly.swift in Sources */,
 				C81F86F32A894EE600801709 /* PlayerView.swift in Sources */,

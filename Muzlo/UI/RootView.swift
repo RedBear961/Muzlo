@@ -11,6 +11,7 @@ public struct RootView: View {
 
 	@InjectedObject var theme: Appearance
 	@InjectedObject var playback: Playback
+	@Injected var dropHandler: DropDelegate
 
 	public var body: some View {
 		ZStack {
@@ -18,10 +19,10 @@ public struct RootView: View {
 				.ignoresSafeArea()
 
 			HStack {
-				Sidebar()
+				Sidebar() // Боковая панель
 
 				VStack(spacing: 24) {
-					PlayerView()
+					PlayerView() // Плеер
 						.environmentObject(playback.currentPlayer)
 
 					TrackListView()
@@ -29,5 +30,13 @@ public struct RootView: View {
 			}
 			.padding([.bottom, .trailing], .p24)
 		}
+		.onDrop(of: [.audio], delegate: dropHandler)
+	}
+}
+
+public final class DropHandler: DropDelegate {
+
+	public func performDrop(info: DropInfo) -> Bool {
+		return true
 	}
 }
