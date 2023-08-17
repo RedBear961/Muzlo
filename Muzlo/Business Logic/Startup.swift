@@ -13,7 +13,7 @@ public final class StartupImpl: Startup {
 
 	@Injected var fileProvider: FileProvider
 	@Injected var trackBuilder: TrackBuilder
-	@Injected var player: Player
+	@Injected var player: QueuePlayer
 
 	public init() {
 		Task { try await load() }

@@ -9,5 +9,5 @@ import SwiftUI
 
 public final class Appearance: ObservableObject {
 
-	public private(set) var current: Theme = DarkTheme()
+	@Published public private(set) var current: Theme = DarkTheme()
 }

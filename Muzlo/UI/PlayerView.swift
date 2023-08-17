@@ -22,7 +22,10 @@ private let kPlayerHeight = 70.0
 public struct PlayerView: View {
 
 	@InjectedObject var theme: Appearance
-	@InjectedObject var player: Player
+	@EnvironmentObject var player: Player
+
+	@State var isDragging = false
+	@State var progress: CGFloat = 0
 
 	public var body: some View {
 		RoundedBackground {
@@ -115,18 +118,40 @@ public struct PlayerView: View {
 					.font(.system(size: 16))
 					.foregroundColor(theme.secondary)
 			}
+			.frame(height: 40)
 
 			GeometryReader { geometry in
 				let width = geometry.size.width
+				let progress = isDragging ? progress : player.state.progress
+				let offset = (width - (kSliderHeight + 3)) * progress
 				ZStack(alignment: .leading) {
 					slider // Фон слайдера прогресса
 						.foregroundColor(theme.placeholder)
+						.frame(height: kSliderHeight)
 					slider // Слайдер прогресса
 						.foregroundColor(theme.primary)
-						.frame(width: width * player.state.progress)
+						.frame(height: kSliderHeight)
+						.frame(width: width * progress)
+
+					Circle()
+						.foregroundColor(theme.primary)
+						.frame(size: kSliderHeight + 3)
+						.offset(x: offset)
+						.gesture(
+							DragGesture()
+								.onChanged({ value in
+									isDragging = true
+									self.progress = value.location.x / width
+								})
+								.onEnded({ value in
+									isDragging = false
+									self.progress = value.location.x / width
+									player.seek(to: progress)
+								})
+						)
 				}
 			}
-			.frame(height: kSliderHeight)
+			.frame(height: kSliderHeight + 3)
 		}
 	}
 
@@ -190,5 +215,6 @@ struct PlayerView_Previews: PreviewProvider {
 	static var previews: some View {
 		PlayerView()
 			.frame(width: 1200)
+			.environmentObject(container.resolve(Player.self)!)
 	}
 }

@@ -10,6 +10,7 @@ import SwiftUI
 public struct RootView: View {
 
 	@InjectedObject var theme: Appearance
+	@InjectedObject var playback: Playback
 
 	public var body: some View {
 		ZStack {
@@ -21,6 +22,8 @@ public struct RootView: View {
 
 				VStack(spacing: 24) {
 					PlayerView()
+						.environmentObject(playback.currentPlayer)
+
 					TrackListView()
 				}
 			}
