@@ -21,6 +21,8 @@
 		C81F86F52A89519900801709 /* RoundedBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = C81F86F42A89519900801709 /* RoundedBackground.swift */; };
 		C821EEA42A879C7800918995 /* Logger in Frameworks */ = {isa = PBXBuildFile; productRef = C821EEA32A879C7800918995 /* Logger */; };
 		C821EEA82A879CEF00918995 /* ID3 in Frameworks */ = {isa = PBXBuildFile; productRef = C821EEA72A879CEF00918995 /* ID3 */; };
+		C8323BD92A8E91E2000A9AE8 /* AppIcon-256.png in Resources */ = {isa = PBXBuildFile; fileRef = C8323BD82A8E91E2000A9AE8 /* AppIcon-256.png */; };
+		C8323BDD2A8EACB0000A9AE8 /* ItemProvider+loadFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8323BDC2A8EACB0000A9AE8 /* ItemProvider+loadFile.swift */; };
 		C83279B32A861E9700B4D229 /* Track.swift in Sources */ = {isa = PBXBuildFile; fileRef = C83279B22A861E9700B4D229 /* Track.swift */; };
 		C87B40912A8BEA890029937F /* Asset.swift in Sources */ = {isa = PBXBuildFile; fileRef = C87B40902A8BEA890029937F /* Asset.swift */; };
 		C87B40932A8BEABF0029937F /* PlainButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C87B40922A8BEABF0029937F /* PlainButton.swift */; };
@@ -38,6 +40,7 @@
 		C8B770A92A8E4216009C34D2 /* Playback.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8B770A82A8E4216009C34D2 /* Playback.swift */; };
 		C8B770AC2A8E6A61009C34D2 /* Time+toString.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8B770AB2A8E6A61009C34D2 /* Time+toString.swift */; };
 		C8B770AE2A8E6A7A009C34D2 /* String+Interpolation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8B770AD2A8E6A7A009C34D2 /* String+Interpolation.swift */; };
+		C8B770B12A8E7328009C34D2 /* Muzlo.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C8B770AF2A8E7328009C34D2 /* Muzlo.xcdatamodeld */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -54,6 +57,9 @@
 		C81F86F42A89519900801709 /* RoundedBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedBackground.swift; sourceTree = "<group>"; };
 		C821EEA12A879C4000918995 /* Logger */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Logger; sourceTree = "<group>"; };
 		C821EEA52A879CB700918995 /* ID3 */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = ID3; sourceTree = "<group>"; };
+		C8323BD72A8E80C3000A9AE8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		C8323BD82A8E91E2000A9AE8 /* AppIcon-256.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "AppIcon-256.png"; path = "Muzlo/Assets.xcassets/AppIcon.appiconset/AppIcon-256.png"; sourceTree = SOURCE_ROOT; };
+		C8323BDC2A8EACB0000A9AE8 /* ItemProvider+loadFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ItemProvider+loadFile.swift"; sourceTree = "<group>"; };
 		C83279B22A861E9700B4D229 /* Track.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Track.swift; sourceTree = "<group>"; };
 		C87B40902A8BEA890029937F /* Asset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Asset.swift; sourceTree = "<group>"; };
 		C87B40922A8BEABF0029937F /* PlainButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlainButton.swift; sourceTree = "<group>"; };
@@ -73,6 +79,7 @@
 		C8B770A82A8E4216009C34D2 /* Playback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Playback.swift; sourceTree = "<group>"; };
 		C8B770AB2A8E6A61009C34D2 /* Time+toString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Time+toString.swift"; sourceTree = "<group>"; };
 		C8B770AD2A8E6A7A009C34D2 /* String+Interpolation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Interpolation.swift"; sourceTree = "<group>"; };
+		C8B770B02A8E7328009C34D2 /* Muzlo.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Muzlo.xcdatamodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -145,6 +152,7 @@
 		C87B40982A8D4C370029937F /* Entity */ = {
 			isa = PBXGroup;
 			children = (
+				C83279B22A861E9700B4D229 /* Track.swift */,
 				C87B40992A8D4C430029937F /* Stack.swift */,
 			);
 			path = Entity;
@@ -163,6 +171,7 @@
 		C87B409C2A8D4E560029937F /* Resource */ = {
 			isa = PBXGroup;
 			children = (
+				C8323BD82A8E91E2000A9AE8 /* AppIcon-256.png */,
 				C87B40902A8BEA890029937F /* Asset.swift */,
 			);
 			path = Resource;
@@ -208,6 +217,7 @@
 		C8B520F12A84208300B4DB44 /* Muzlo */ = {
 			isa = PBXGroup;
 			children = (
+				C8323BD72A8E80C3000A9AE8 /* Info.plist */,
 				C8B520F22A84208300B4DB44 /* MuzloApp.swift */,
 				C81F86E12A893D8000801709 /* Assembly */,
 				C81F86E02A893D7800801709 /* Business Logic */,
@@ -215,7 +225,7 @@
 				C87B40982A8D4C370029937F /* Entity */,
 				C81F86E62A893E5A00801709 /* Utils */,
 				C87B409C2A8D4E560029937F /* Resource */,
-				C83279B22A861E9700B4D229 /* Track.swift */,
+				C8B770AF2A8E7328009C34D2 /* Muzlo.xcdatamodeld */,
 				C8B520F62A84208700B4DB44 /* Assets.xcassets */,
 				C8B520FB2A84208700B4DB44 /* Muzlo.entitlements */,
 			);
@@ -227,6 +237,7 @@
 			children = (
 				C8B770AB2A8E6A61009C34D2 /* Time+toString.swift */,
 				C8B770AD2A8E6A7A009C34D2 /* String+Interpolation.swift */,
+				C8323BDC2A8EACB0000A9AE8 /* ItemProvider+loadFile.swift */,
 			);
 			path = Foundation;
 			sourceTree = "<group>";
@@ -297,6 +308,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C8323BD92A8E91E2000A9AE8 /* AppIcon-256.png in Resources */,
 				C8B520F72A84208700B4DB44 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -321,8 +333,10 @@
 				C83279B32A861E9700B4D229 /* Track.swift in Sources */,
 				C8B770AC2A8E6A61009C34D2 /* Time+toString.swift in Sources */,
 				C87B40952A8BEB160029937F /* EnvironmentsValues.swift in Sources */,
+				C8B770B12A8E7328009C34D2 /* Muzlo.xcdatamodeld in Sources */,
 				C81F86EF2A8946FB00801709 /* AppAssembly.swift in Sources */,
 				C81F86F32A894EE600801709 /* PlayerView.swift in Sources */,
+				C8323BDD2A8EACB0000A9AE8 /* ItemProvider+loadFile.swift in Sources */,
 				C8B521022A84213100B4DB44 /* TrackListView.swift in Sources */,
 				C81F86ED2A8946D500801709 /* Theme.swift in Sources */,
 				C81F86D92A8815F900801709 /* Player.swift in Sources */,
@@ -466,8 +480,8 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Muzlo/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Распознование текстов музыки";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -496,8 +510,8 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Muzlo/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Распознование текстов музыки";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -563,6 +577,19 @@
 			productName = ID3;
 		};
 /* End XCSwiftPackageProductDependency section */
+
+/* Begin XCVersionGroup section */
+		C8B770AF2A8E7328009C34D2 /* Muzlo.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				C8B770B02A8E7328009C34D2 /* Muzlo.xcdatamodel */,
+			);
+			currentVersion = C8B770B02A8E7328009C34D2 /* Muzlo.xcdatamodel */;
+			path = Muzlo.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = C8B520E72A84208300B4DB44 /* Project object */;
 }

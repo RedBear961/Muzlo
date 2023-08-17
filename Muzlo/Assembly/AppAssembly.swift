@@ -47,8 +47,4 @@ final class AppAssembly: AutoAssembly {
 	func trackBuilder() {
 		container.register(TrackBuilder.self) { _ in TrackBuilderImpl() }
 	}
-
-	func dropHandler() {
-		container.register(DropDelegate.self) { _ in DropHandler() }
-	}
 }

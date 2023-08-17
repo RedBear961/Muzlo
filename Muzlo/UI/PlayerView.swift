@@ -25,7 +25,6 @@ public struct PlayerView: View {
 	public var body: some View {
 		RoundedBackground {
 			HStack(spacing: 0) {
-
 				Spacer()
 
 				controls

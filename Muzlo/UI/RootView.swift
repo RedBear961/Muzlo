@@ -30,13 +30,8 @@ public struct RootView: View {
 			}
 			.padding([.bottom, .trailing], .p24)
 		}
-		.onDrop(of: [.audio], delegate: dropHandler)
-	}
-}
-
-public final class DropHandler: DropDelegate {
-
-	public func performDrop(info: DropInfo) -> Bool {
-		return true
+		.onDrop(of: [.mp3], isTargeted: nil) { providers in
+			playback.process(providers: providers)
+		}
 	}
 }

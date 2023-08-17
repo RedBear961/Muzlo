@@ -8,14 +8,14 @@
 import Foundation
 import SwiftUI
 
-struct Track: Hashable {
-
-	let title: String
-	let artist: String
-	let album: String
-	let image: UIImage
-	let duration: String
-}
+//struct Track: Hashable {
+//
+//	let title: String
+//	let artist: String
+//	let album: String
+//	let image: UIImage
+//	let duration: String
+//}
 
 public struct TrackInfo {
 

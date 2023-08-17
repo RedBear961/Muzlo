@@ -20,27 +20,7 @@ public final class FileProviderImpl: FileProvider {
 	private let appDirectory: String
 
 	public init() {
-		self.appDirectory = "/Users/\(NSUserName())/Music/Muzlo"
-	}
-
-	var urls: [URL] {
-		let fileManager = FileManager.default
-		let appDirectory = "/Users/\(NSUserName())/Music/Muzlo"
-		if !fileManager.fileExists(atPath: appDirectory) {
-			try! fileManager.createDirectory(
-				atPath: appDirectory,
-				withIntermediateDirectories: true
-			)
-		}
-		let contents = try! fileManager.contentsOfDirectory(atPath: appDirectory)
-		return contents.compactMap { file in
-			guard let fileExtension = file.split(separator: ".").last,
-				  fileExtension == "mp3" else {
-				return nil
-			}
-
-			return URL(filePath: appDirectory).appending(path: file)
-		}
+		self.appDirectory = "/Users/\(NSUserName())/Music/Muzlo/Music Library.muzlodb"
 	}
 
 	public func load() throws -> [URL] {
