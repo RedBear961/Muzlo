@@ -25,4 +25,9 @@ final class PlayerAssembly: AutoAssembly {
 			Playback(player: r.resolve(QueuePlayer.self)!)
 		}.inObjectScope(.container)
 	}
+
+	func mediateka() {
+		container.register(Mediateka.self) { _ in Mediateka() }
+			.inObjectScope(.container)
+	}
 }

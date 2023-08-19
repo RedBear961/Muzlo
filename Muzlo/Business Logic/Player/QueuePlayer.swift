@@ -14,8 +14,8 @@ public final class QueuePlayer: Player {
 	private var currentPlayer: AVAudioPlayer?
 	private var progressTask: Task<Void, Error>?
 
-	private var history: Stack<TrackInfo>
-	private var queue: Stack<TrackInfo>
+	private var history: Stack<Track>
+	private var queue: Stack<Track>
 
 	public override init() {
 		self.history = Stack()
@@ -72,7 +72,7 @@ public final class QueuePlayer: Player {
 
 	/// Переключает на предыдущую композицию.
 	public override func back() {
-		guard let currentInfo = trackInfo else {
+		guard let currentTrack = track as? Track else {
 			Logger.shared.log(
 				level: .error,
 				"Attempt to call `Player.back()` with an empty history!"
@@ -80,11 +80,11 @@ public final class QueuePlayer: Player {
 			return
 		}
 
-		queue.push(currentInfo)
+		queue.push(currentTrack)
 		state.canForward = true
 
-		let info = try! history.pop()
-		playTrack(info)
+		let track = try! history.pop()
+		playTrack(track)
 		state.canBack = !history.isEmpty
 	}
 
@@ -98,13 +98,13 @@ public final class QueuePlayer: Player {
 			return
 		}
 
-		if let currentInfo = trackInfo {
-			history.push(currentInfo)
+		if let currentTrack = track as? Track {
+			history.push(currentTrack)
 			state.canBack = true
 		}
 
-		let info = try! queue.pop()
-		playTrack(info)
+		let track = try! queue.pop()
+		playTrack(track)
 		state.canForward = !queue.isEmpty
 	}
 
@@ -133,7 +133,7 @@ public final class QueuePlayer: Player {
 	// MARK: - Queue Player
 
 	/// Добавляет треки в конец очереди.
-	public func append(tracks: [TrackInfo]) {
+	public func append(tracks: [Track]) {
 		queue.append(tracks)
 		Task { @MainActor in
 			state.canForward = !queue.isEmpty
@@ -143,7 +143,7 @@ public final class QueuePlayer: Player {
 
 	// MARK: - Private
 
-	private func playTrack(_ track: TrackInfo) {
+	private func playTrack(_ track: Track) {
 		let player = try! AVAudioPlayer(contentsOf: track.url)
 		player.delegate = self
 		player.prepareToPlay()
@@ -151,7 +151,7 @@ public final class QueuePlayer: Player {
 		player.play()
 
 		self.currentPlayer = player
-		self.trackInfo = track
+		self.track = track
 	}
 
 	private func handleProgress() async throws {

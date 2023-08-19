@@ -16,7 +16,7 @@ public protocol DropHandler {
 public final class DropHandlerImpl: DropHandler {
 
 	@Injected private var trackBuilder: TrackBuilder
-	@Injected private var playback: Playback
+	@Injected private var mediateka: Mediateka
 
 	public func handle(providers: [ItemProvider]) -> Bool {
 		let providers = providers.filter {
@@ -30,7 +30,7 @@ public final class DropHandlerImpl: DropHandler {
 				let track = try await trackBuilder.track(from: url)
 				tracks.append(track)
 			}
-			playback.append(tracks: tracks)
+			mediateka.append(tracks: tracks)
 		}
 		
 		return !providers.isEmpty

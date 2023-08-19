@@ -14,8 +14,4 @@ public final class Playback: ObservableObject {
 	public init(player: Player) {
 		self.currentPlayer = player
 	}
-
-	public func append(tracks: [Track]) {
-		
-	}
 }

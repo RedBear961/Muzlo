@@ -85,8 +85,8 @@ public struct PlayerView: View {
 
 	private var track: some View {
 		HStack(spacing: 12) {
-			let info = player.trackInfo ?? .empty
-			info.album
+			let track = player.track ?? EmptyTrack()
+			track.preview
 				.resizable()
 				.frame(size: kAlbumSize)
 				.cornerRadius(.r8)
@@ -98,15 +98,15 @@ public struct PlayerView: View {
 
 	private var trackInfo: some View {
 		VStack(spacing: 6) {
-			let info = player.trackInfo ?? .empty
+			let track = player.track ?? EmptyTrack()
 			let theme = theme.current
 			HStack {
 				VStack(alignment: .leading) {
-					Text(info.title) // Название аудио
+					Text(track.name) // Название аудио
 						.fontWeight(.semibold)
 						.foregroundColor(theme.primary)
 
-					Text(info.artist) // Исполнитель
+					Text(track.artist?.name ?? "") // Исполнитель
 						.foregroundColor(theme.secondary)
 				}
 				.font(.system(size: 17))

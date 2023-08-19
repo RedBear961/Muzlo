@@ -39,5 +39,6 @@ final class AppAssembly: AutoAssembly {
 
 	func coreDataStorage() {
 		container.register(CoreDataStorage.self) { _ in CoreDataStorageImpl() }
+			.inObjectScope(.container)
 	}
 }

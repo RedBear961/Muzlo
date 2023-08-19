@@ -45,6 +45,6 @@ public struct ID3Meta {
 	// MARK: - Private
 
 	private func string(for tag: ID3Tag) -> String {
-		(tags[tag] as? String)?.replacingOccurrences(of: " [Livemusic.kz]", with: "") ?? ""
+		(tags[tag] as? String) ?? ""
 	}
 }

@@ -28,7 +28,7 @@ public class Player: NSObject, ObservableObject {
 
 	@Published public var state: State
 	@Published public var volume: CGFloat = 0.5
-	@Published public var trackInfo: TrackInfo?
+	@Published public var track: TrackInfo?
 
 	public override init() {
 		self.state = State(

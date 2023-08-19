@@ -11,24 +11,10 @@ public protocol Startup {}
 
 public final class StartupImpl: Startup {
 
-	@Injected var fileProvider: FileProvider
-	@Injected var trackBuilder: TrackBuilder
 	@Injected var player: QueuePlayer
+	@Injected var mediateka: Mediateka
 
 	public init() {
-		Task { try await load() }
-	}
-
-	// MARK: - Private
-
-	private func load() async throws {
-		let urls = try fileProvider.load()
-		var tracks = [TrackInfo]()
-		for url in urls {
-			let info = try await trackBuilder.trackInfo(from: url)
-			tracks.append(info)
-		}
-
-		player.append(tracks: tracks)
+		player.append(tracks: mediateka.tracks)
 	}
 }

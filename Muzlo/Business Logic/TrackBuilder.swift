@@ -12,8 +12,6 @@ import AVFoundation
 public protocol TrackBuilder {
 
 	func track(from url: URL) async throws -> Track
-
-	func trackInfo(from url: URL) async throws -> TrackInfo
 }
 
 public final class TrackBuilderImpl: TrackBuilder {
@@ -35,22 +33,19 @@ public final class TrackBuilderImpl: TrackBuilder {
 		track.duration = duration
 		track.url = url
 
-		return track
-	}
+		if let artist = artist(from: meta.artist) {
+			track.artist = artist
+			artist.add(track: track)
 
-	public func trackInfo(from url: URL) async throws -> TrackInfo {
-		let meta = try ID3Decoder().decode(from: url)
-		let asset = AVAsset(url: url)
-		let duration = try await asset.load(.duration)
-		let formatted = String(format: "%d:%02d", duration.minutes, duration.seconds % 60)
-		let image = meta.image != nil ? Image(uiImage: meta.image!) : .album
-		return TrackInfo(
-			title: meta.title,
-			artist: meta.artist,
-			duration: formatted,
-			album: image,
-			url: url
-		)
+			if let album = album(for: artist, from: meta.album) {
+				album.add(track: track)
+				track.album = album
+			}
+		}
+
+		try context.save()
+
+		return track
 	}
 
 	// MARK: - Private
@@ -63,5 +58,30 @@ public final class TrackBuilderImpl: TrackBuilder {
 
 	private func image(from meta: ID3Meta) -> UIImage {
 		return UIImage(named: "ic_album")!
+	}
+
+	private func artist(from name: String) -> Artist? {
+		guard !name.isEmpty else { return nil }
+
+		if let artist: Artist = try? context.first(where: "name = %@", name) {
+			return artist
+		}
+
+		let artist = Artist(context: context)
+		artist.name = name
+		return artist
+	}
+
+	private func album(for artist: Artist, from name: String) -> Album? {
+		guard !name.isEmpty else { return nil }
+
+		if let album = artist.albums.first(where: { $0.name == name }) {
+			return album
+		}
+
+		let album = Album(context: context)
+		album.name = name
+		artist.add(album: album)
+		return album
 	}
 }

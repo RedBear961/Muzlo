@@ -15,7 +15,7 @@ public protocol CoreDataStorage {
 
 public final class CoreDataStorageImpl: CoreDataStorage {
 
-	public var persistentContainer: NSPersistentContainer = {
+	public lazy var persistentContainer: NSPersistentContainer = {
 		let container = NSPersistentContainer(name: "Muzlo")
 		container.loadPersistentStores { description, error in
 			if let error {
