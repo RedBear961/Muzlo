@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  SynchsafeDecoder.swift
 //  
 //
 //  Created by Georgiy Cheremnykh on 12.08.2023.
@@ -21,5 +21,12 @@ struct SynchsafeDecoder {
 		}
 
 		return decoded
+	}
+}
+
+extension UInt32 {
+
+	var synchsafe: UInt32 {
+		SynchsafeDecoder().decode(self)
 	}
 }

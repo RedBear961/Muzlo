@@ -21,4 +21,12 @@ struct MuzloApp: App {
 				.minimumWindowSize(width: 1500)
 		}
 	}
+
+	init() {
+		let cString: [UInt8] = [0x51, 0x52, 0x53, 0x0, 0x0, 0x54]
+		let string = cString.reduce("") {
+			$0 + String(UnicodeScalar($1))
+		}
+		print(String(data: Data(cString), encoding: .utf8))
+	}
 }

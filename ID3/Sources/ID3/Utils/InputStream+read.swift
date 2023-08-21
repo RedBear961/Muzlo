@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  InputStream+read.swift
 //  
 //
 //  Created by Georgiy Cheremnykh on 12.08.2023.

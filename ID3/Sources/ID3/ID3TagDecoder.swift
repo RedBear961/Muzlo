@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  ID3TagDecoder.swift
 //  
 //
 //  Created by Georgiy Cheremnykh on 12.08.2023.
@@ -41,38 +41,25 @@ struct ID3TagDecoder {
 		self.version = version
 	}
 
-	func decode(_ tag: ID3Tag, from data: Data) -> Any? {
-		var value: Any?
-		switch tag {
+	func decode(frame: ID3FrameHeader, from data: Data) -> ID3Frame? {
+		var segment: ID3Frame?
+		switch frame.id {
 		case .attachedPicture:
-			value = image(from: data)
-		case .userDefinedURL: // Not supported
-			return nil
+			guard let image = image(from: data) else { break }
+			segment = ID3DataFrame(
+				header: frame,
+				data: image
+			)
+		case .title, .artist, .album, .recordingYear:
+			segment = ID3TextFrame(header: frame, from: data)
 		default:
-			value = string(from: data)
-		}
-
-		return value
-	}
-
-	// MARK: - Private
-
-	// [Header] | [$xx] | [Text]
-	private func string(from data: Data) -> String? {
-		let marker = data[Constants.headerSize]
-		guard let encoding = encoding(from: marker) else {
-			Logger.shared.assert(true, message: "Bad encoding marker - '\(marker)'!")
 			return nil
 		}
 
-		let subdata = data.subdata(from: Constants.headerSize + 1)
-		let value = String(
-			data: subdata,
-			encoding: encoding
-		)
-		return value
+		return segment
 	}
 
+	// [Header] | [$xx] | [Binary Data]
 	private func image(from data: Data) -> Data? {
 		let frame = data.subdata(from: Constants.headerSize + 1)
 

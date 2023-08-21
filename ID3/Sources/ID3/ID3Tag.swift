@@ -1,5 +1,5 @@
 //
-//  Tag.swift
+//  ID3Tag.swift
 //  Muzlo
 //
 //  Created by Georgiy Cheremnykh on 10.08.2023.
@@ -28,13 +28,21 @@ public enum ID3Tag: String, Equatable {
 	case unsyncronisedLyrics = "USLT"
 	case comment = "COMM"
 	case originalFilename = "TOFN"
-	case userDefinedURL = "WXXX"
+	case null = ""
 }
 
-extension ID3Tag {
+// Маркер пустого фрейма.
+private let kEmptyFrame: [UInt8] = [0x0, 0x0, 0x0, 0x0]
 
-	init?(scalar: [UInt8]) {
-		let identifier = scalar.reduce("") {
+extension ID3Tag: ExpressibleByArray {
+
+	public init?(_ array: [UInt8]) {
+		if array == kEmptyFrame {
+			self = .null
+			return
+		}
+
+		let identifier = array.reduce("") {
 			$0 + String(UnicodeScalar($1))
 		}
 		self.init(rawValue: identifier)

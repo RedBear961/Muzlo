@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  ID3Decoder.swift
 //  
 //
 //  Created by Georgiy Cheremnykh on 12.08.2023.
@@ -8,6 +8,38 @@
 import Foundation
 import Logger
 
+protocol ID3Frame {
+
+	var header: ID3FrameHeader { get }
+}
+
+// [Header] | [$xx] | [Text]
+struct ID3TextFrame: ID3Frame {
+
+	let header: ID3FrameHeader
+	let encoding: String.Encoding
+	let text: String
+
+	init?(header: ID3FrameHeader, from data: Data) {
+		var iterator = data.componentIterator()
+
+		guard let encoding = iterator.textEncoding(),
+			  let text = iterator.text(encoding: encoding) else {
+			return nil
+		}
+
+		self.header = header
+		self.encoding = encoding
+		self.text = text
+	}
+}
+
+struct ID3DataFrame: ID3Frame {
+
+	let header: ID3FrameHeader
+	let data: Data
+}
+
 public enum ID3DecodingError: Error {
 
 	case unknown
@@ -15,56 +47,37 @@ public enum ID3DecodingError: Error {
 	case unsupportedVersion
 }
 
-// Маркер пустого фрейма.
-private let kEmptyFrame: [UInt8] = [0x0, 0x0, 0x0, 0x0]
-
 public final class ID3Decoder {
 
 	public init() {}
 
 	public func decode(from url: URL) throws -> ID3Meta {
-		// Блок тэгов.
-		let data = try frame(from: url)
+		let (header, data) = try frame(from: url)
+		let tagDecoder = ID3TagDecoder(version: header.version)
 
-		// Версия ID3.
-		let version = try version(from: data)
-		let tagDecoder = ID3TagDecoder(version: version)
-
-		var tags = [ID3Tag: Any]()
-		var position = Constants.headerSize
+		var tags = [ID3Tag: ID3Frame]()
+		var position = 0
 		while position < data.count {
-			// Размер тэга.
-			let frameSize = blockSize(
-				for: data as NSData,
-				position: position,
-				version: version
+			let frameHeader = try ID3FrameHeader(
+				from: data,
+				for: header.version
 			)
 
-			// Имя тэга.
-			let frame = data.subdata(from: position, count: frameSize)
-			let identifier = [UInt8](frame.subdata(in: 0..<version.identifierSize))
-			
-			position += frame.count
+			guard frameHeader.id != .null else { break }
 
-			// Если пустой фрейм, то либо метадата закончилась,
-			// либо записана с ошибкой.
-			if identifier == kEmptyFrame {
-				break
+			let value = tagDecoder.decode(
+				frame: frameHeader,
+				from: data[10...]
+			)
+
+			if let value {
+				tags[frameHeader.id] = value
 			}
 
-			// Значение тэга.
-			if let tag = ID3Tag(scalar: identifier),
-			   let value = tagDecoder.decode(tag, from: frame) {
-				tags[tag] = value
-			}
-
-//			Logger.shared.assert(
-//				ID3Tag(scalar: identifier) != nil,
-//				message: identifier.reduce("") { $0 + String(UnicodeScalar($1)) }
-//			)
+			position += frameHeader.size
 		}
 
-		return ID3Meta(version: version, tags: tags)
+		return ID3Meta(header: header, tags: tags)
 	}
 
 	// MARK: - Private
@@ -73,7 +86,7 @@ public final class ID3Decoder {
 	// 3 bytes | 2 bytes  | 1 byte      | 4 bytes
 	// ID      | version  | flags       | size
 	// ["ID3"] | [$03 00] | [%abc00000] | [4 * %0xxxxxxx]
-	private func frame(from url: URL) throws -> Data {
+	private func frame(from url: URL) throws -> (ID3Header, Data) {
 		guard let stream = InputStream(url: url) else {
 			throw ID3DecodingError.unknown
 		}
@@ -81,51 +94,9 @@ public final class ID3Decoder {
 		stream.open()
 
 		// Размер блока тэгов.
-		let header = try stream.read(count: Constants.headerSize)
-		let tagSize = Data(header).withUnsafeBytes { buffer in
-			let size = buffer.baseAddress!
-				.advanced(by: Constants.tagBytesOffset)
-				.assumingMemoryBound(to: UInt32.self)
-				.pointee
-				.bigEndian
-			return SynchsafeDecoder().decode(size)
-		}
-
-		let frame = try stream.read(count: Int(tagSize))
-		return Data(header + frame)
-	}
-
-	private func version(from data: Data) throws -> ID3Version {
-		guard data.count > Constants.versionBytesOffset else {
-			throw ID3DecodingError.badFile
-		}
-
-		let header = [UInt8](data.subdata(in: 0..<Constants.versionSize))
-		let versionRaw = [UInt8](data)[Constants.versionBytesOffset]
-		guard let version = ID3Version(rawValue: versionRaw),
-			  header.elementsEqual(version.header) else {
-			throw ID3DecodingError.unsupportedVersion
-		}
-
-		return version
-	}
-
-	// 4 bytes        | 4 bytes        | 2 bytes
-	// ID (4 char)    | size 		   | flags
-	// [$xx xx xx xx] | [$xx xx xx xx] | [$xx xx]
-	private func blockSize(
-		for data: NSData,
-		position: Int,
-		version: ID3Version
-	) -> Int {
-		let position = position + version.sizeOffset
-		let range = NSRange(
-			location: position,
-			length: Constants.blockSizeLength
-		)
-		var size: UInt32 = 0
-		data.getBytes(&size, range: range)
-		size = size.bigEndian & version.sizeMask
-		return Int(size + UInt32(Constants.headerSize))
+		let bytes = try stream.read(count: Constants.headerSize)
+		let header = try ID3Header(from: Data(bytes))
+		let frame = try stream.read(count: header.size)
+		return (header, Data(frame))
 	}
 }
